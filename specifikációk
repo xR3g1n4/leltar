@@ -1,59 +1,38 @@
 Szoftver Specifikáció: K-pop Bolt Raktárkezelő Rendszer
 1. Rendszer Áttekintése
 Projekt Célja: Egy K-pop termékekkel (albumok, verziók, photocardok, kiegészítők) foglalkozó üzlet raktári készletének hatékony rendszerezése, szortírozása és valós idejű számontartása.
-
 Platform: Reszponzív webalkalmazás, amely asztali gépekről, táblagépekről és okostelefonokról is zökkenőmentesen elérhető a raktárban dolgozók számára.
 
 2. Felhasználói Szerepkörök és Jogosultságok
 Adminisztrátor (Tulajdonos):
-
 Teljes körű hozzáférés a rendszerhez.
-
 Pénzügyi adatok (eladási árak) kezelése.
-
 Felhasználók és jogosultságok kezelése.
-
 Különleges, asztali alkalmazás stílusú, letisztult adminisztrációs felület elérése.
 
 Árufeltöltő:
-
 Új termékek (albumok, verziók) felvitele a rendszerbe.
-
 Raktári mennyiség növelése, új polchelyek hozzárendelése.
-
 Dolgozó (Eladó / Raktáros):
-
 Termékek keresése, polchelyek gyors ellenőrzése.
-
 Készlet csökkentése (levétele) eladás vagy sérülés miatt.
 
 3. Adatkezelés és Adatbázis
 Adatbázis technológia: SQLite3 (könnyű kezelhetőség, fájl alapú, gyors prototípus-készítéshez ideális).
-
 Főbb adategységek (Entitások):
-
 Felhasználók: (ID, felhasználónév, jelszó hash, szerepkör)
-
 Termékek: (ID, név, előadó, verzió, eladási ár, raktári polc/hely, aktuális készletmennyiség)
-
 Mozgások/Napló (opcionális, de ajánlott): (ID, termék_ID, felhasználó_ID, művelet típusa [felvitel/levétel], mennyiség, időbélyeg)
 
 4. Felhasználói Felületek (UI) és Oldalak
 Bejelentkezési oldal: Biztonságos azonosítás szerepkör-alapú jogosultságkezeléssel.
-
 Főoldal / Műszerfal: Áttekintés a legfontosabb statisztikákról és gyorsgombok a napi feladatokhoz.
-
 Termékkereső: Gyors, szűrhető keresőfelület név, előadó és verzió alapján, a pontos polchely megjelenítésével.
-
 Leltárkezelő felület: Interaktív felület az árufeltöltéshez és az árukészlet levételéhez.
-
 Adminisztrációs panel: Külön stílusú, dedikált felület az adminisztrátornak az árak, adatok és a rendszer finomhangolására.
-
 Súgó: Beépített útmutató a rendszer használatához az új dolgozók betanításához.
 
 5. Technológiai Stack
 Frontend: HTML5, CSS3 (Bootstrap a reszponzív, mobilos megjelenésért), JavaScript.
-
 Backend: Node.js (Express keretrendszerrel a tiszta API végpontok kezeléséhez).
-
 Adatbázis: SQLite3.
