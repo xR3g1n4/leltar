@@ -1,0 +1,25 @@
+1. Rendszer áttekintése és céljai
+Cél: K-pop termékekkel (albumok, verziók, kiegészítők) foglalkozó raktár készletkezelésének és logisztikájának digitalizálása.
+
+Megoldás: Egy reszponzív webalkalmazás, amely böngészőn keresztül, mobil eszközökről (telefon, tablet) is zökkenőmentesen használható a raktáron belül.
+
+2. Felhasználói szerepkörök és jogosultságok
+Adminisztrátor (Tulajdonos): Teljes körű hozzáférés, árak és statisztikák kezelése, dedikált asztali jellegű admin felület használata.
+
+Dolgozó: Termékek keresése, raktári helyek lekérdezése, valamint adatok levétele (készletcsökkentés eladás vagy sérülés miatt).
+
+Árufeltöltő: Új áruk, albumok és specifikus verziók rögzítése, készlet növelése a rendszerben.
+
+3. Főoldalak és felhasználói felület (UI)
+Bejelentkezési oldal: Biztonságos azonosítás szerepkör-alapú jogosultságkezeléssel.
+
+Főoldal és Termékkereső: Gyors, szűrhető keresés név, előadó és verzió alapján a pontos polchely megjelenítésével.
+
+Leltárkezelő felület és Súgó: Interaktív modulok a napi raktári mozgásokhoz (felvitel/levétel) és egy beépített útmutató.
+
+4. Javasolt technológiai stack
+Backend: Java (Spring Boot) vagy Node.js a robusztus üzleti logika és API kezelés érdekében.
+
+Frontend: HTML5, CSS3 (Bootstrap a reszponzív, mobilos megjelenéshez) és JavaScript.
+
+Adatbázis: SQLite3 (könnyű kezelhetőség és gyors implementáció) vagy PostgreSQL.
