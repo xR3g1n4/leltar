@@ -48,3 +48,10 @@ Súgó: Beépített útmutató a rendszer használatához az új dolgozók betan
 Frontend: HTML5, CSS3 (Bootstrap a reszponzív, mobilos megjelenésért), JavaScript.
 Backend: Node.js (Express keretrendszerrel a tiszta API végpontok kezeléséhez).
 Adatbázis: SQLite3.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6. Milyen adatok tárolása
+
+ID, termék név, db, polc, ár
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
