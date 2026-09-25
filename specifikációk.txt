@@ -1,49 +1,42 @@
 Szoftver Specifikáció: K-pop Bolt Raktárkezelő Rendszer
 
 1. Rendszer Áttekintése
-Projekt Célja: Egy K-pop termékekkel (albumok, verziók, photocardok, kiegészítők) foglalkozó üzlet raktári készletének hatékony rendszerezése, szortírozása és valós idejű számontartása.
-Platform: Reszponzív webalkalmazás, amely asztali gépekről, táblagépekről és okostelefonokról is zökkenőmentesen elérhető a raktárban dolgozók számára.
+Projekt Célja: Egy K-pop termékekkel foglalkozó üzlet raktári készletének hatékony rendszerezése, szortírozása és valós idejű számontartása.
+Platform: Reszponzív webalkalmazás, amely asztali gépekről, mobileszközökről is használható a dolgozók számára.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 2. Felhasználói Szerepkörök és Jogosultságok
 
-Adminisztrátor (Tulajdonos):
+Adminisztrátor:
 Teljes körű hozzáférés a rendszerhez.
-Pénzügyi adatok (eladási árak) kezelése.
-Felhasználók és jogosultságok kezelése.
-Különleges, asztali alkalmazás stílusú, letisztult adminisztrációs felület elérése.
+Árak módosítása.
+Felhasználók kezelése.
 
-Árufeltöltő:
-Új termékek (albumok, verziók) felvitele a rendszerbe.
-Raktári mennyiség növelése
-
-Dolgozó (Eladó / Raktáros):
-Termékek keresése, polchelyek gyors ellenőrzése.
-Készlet csökkentése (levétele) eladás vagy sérülés miatt.
+Felhasználó:
+Új termék felvitele és levétele (készletmennyiség). 
+Termék státuszának megadása(új, sérült, bontott).
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 3. Adatkezelés és Adatbázis
 Adatbázis tipus: SQLite3.
 
-Főbb adategységek (Entitások):
+Főbb adategységek:
 Felhasználók: (ID, felhasználónév, jelszó hash, szerepkör)
 
-Termékek: (ID, név, verzió, eladási ár, raktári polc/hely, készletmennyiség)
+Termékek: (előadó, album, ár, készletmennyiség)
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 4. Felhasználói Felületek (UI) és Oldalak
 
 Bejelentkezési oldal: Biztonságos azonosítás szerepkör-alapú jogosultságkezeléssel.
 
-(opcionális) Termékkereső: Gyors, szűrhető keresőfelület név, előadó és verzió alapján, a pontos polchely megjelenítésével. 
+Leltárkezelő felület: Szűrhető keresőfelület előadó és album alapján. Készlet kezelés.
 
-Leltárkezelő felület: Interaktív felület az árufeltöltéshez és az árukészlet levételéhez.
-
-Adminisztrációs panel: Külön stílusú, dedikált felület az adminisztrátornak az árak, adatok és a rendszer finomhangolására.
+Adminisztrációs felület: dedikált felület az adminisztrátornak az árak, adatok, felhasználók módosítására.
 
 Súgó: Beépített útmutató a rendszer használatához az új dolgozók betanításához.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 5. Technológiai Stack
 
 Frontend: HTML5, CSS3 (Bootstrap a reszponzív, mobilos megjelenésért), JavaScript.
-Backend: Node.js (Express keretrendszerrel a tiszta API végpontok kezeléséhez).
+Backend: Node.js (Express keretrendszer, BetterSQLite3 csomag).
 Adatbázis: SQLite3.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
