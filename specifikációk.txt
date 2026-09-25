@@ -19,7 +19,7 @@ Termék státuszának megadása(új, sérült, bontott).
 Adatbázis tipus: SQLite3.
 
 Főbb adategységek:
-Felhasználók: (ID, felhasználónév, jelszó hash, szerepkör)
+Felhasználók: (felhasználónév, jelszó hash, szerepkör)
 
 Termékek: (előadó, album, ár, készletmennyiség)
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
