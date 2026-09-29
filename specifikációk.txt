@@ -13,15 +13,15 @@ Felhasználók kezelése.
 
 Felhasználó:
 Új termék felvitele és levétele (készletmennyiség). 
-Termék státuszának megadása(új, sérült, bontott).
+Termék státuszának megadása (új, sérült, bontott).
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 3. Adatkezelés és Adatbázis
 Adatbázis tipus: SQLite3.
 
 Főbb adategységek:
-Felhasználók: (felhasználónév, jelszó hash, szerepkör)
+Felhasználók: users(username, password, role)
 
-Termékek: (előadó, album, ár, készletmennyiség)
+Termékek: products(artist, album, price, status, storage)
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 4. Felhasználói Felületek (UI) és Oldalak
 
