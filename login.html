@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Bias Wrecker – Bejelentkezés</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <main class="login">
+    <div class="logo" role="img" aria-label="Logó helye"></div>
+    <h1 class="title">THE BIAS WRECKER</h1>
+    <p class="subtitle">K-POP raktárkezelő és készletnyilvántartó rendszer</p>
+
+    <form class="card" action="#" method="post">
+      <div class="role-switch" role="radiogroup" aria-label="Szerepkör">
+        <input type="radio" name="role" id="role-worker" value="dolgozo" checked>
+        <label for="role-worker">Dolgozó</label>
+
+        <input type="radio" name="role" id="role-admin" value="admin">
+        <label for="role-admin">Adminisztrátor</label>
+      </div>
+
+      <label class="field-label" for="username">Felhasználónév:</label>
+      <input class="field" type="text" id="username" name="username" autocomplete="username" required>
+
+      <label class="field-label" for="password">Jelszó:</label>
+      <input class="field" type="password" id="password" name="password" autocomplete="current-password" required>
+
+      <button class="submit" type="submit">Bejelentkezés</button>
+    </form>
+  </main>
+</body>
+</html>
