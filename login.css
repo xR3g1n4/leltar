@@ -128,6 +128,37 @@ body {
   border-color: var(--lilac);
 }
 
+/* Password show/hide */
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap .field {
+  padding-right: 44px;
+}
+
+.toggle-pw {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle-pw:hover { color: var(--lilac); }
+.toggle-pw:focus-visible { outline: 2px solid var(--lilac); outline-offset: -2px; }
+
+.toggle-pw .icon-hide { display: none; }
+.toggle-pw[aria-pressed="true"] .icon-show { display: none; }
+.toggle-pw[aria-pressed="true"] .icon-hide { display: block; }
+
 .submit {
   display: block;
   width: calc(100% - 20px);
