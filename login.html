@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The Bias Wrecker – Bejelentkezés</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="login.css">
 </head>
@@ -26,10 +28,36 @@
       <input class="field" type="text" id="username" name="username" autocomplete="username" required>
 
       <label class="field-label" for="password">Jelszó:</label>
-      <input class="field" type="password" id="password" name="password" autocomplete="current-password" required>
+      <div class="password-wrap">
+        <input class="field" type="password" id="password" name="password" autocomplete="current-password" required>
+        <button class="toggle-pw" type="button" aria-label="Jelszó megjelenítése" aria-pressed="false">
+          <svg class="icon-show" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <svg class="icon-hide" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17.94 17.94A10.9 10.9 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94"/>
+            <path d="M9.9 4.24A10.4 10.4 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+            <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+      </div>
 
       <button class="submit" type="submit">Bejelentkezés</button>
     </form>
   </main>
+
+  <script>
+    const pw = document.getElementById("password");
+    const toggle = document.querySelector(".toggle-pw");
+
+    toggle.addEventListener("click", () => {
+      const show = pw.type === "password";
+      pw.type = show ? "text" : "password";
+      toggle.setAttribute("aria-pressed", String(show));
+      toggle.setAttribute("aria-label", show ? "Jelszó elrejtése" : "Jelszó megjelenítése");
+    });
+  </script>
 </body>
 </html>
