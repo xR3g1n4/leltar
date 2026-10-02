@@ -1,0 +1,23 @@
+### 2. Felhasználó regisztrációja
+@baseUrl = http://localhost:3000
+
+### 1. Admin bejelentkezés
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Nagy Anna",
+  "password": "pass111"
+}
+
+### 2. Felhasználó regisztráció
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "username": "harmadik",
+  "password": "pass123",
+  "role": "Dolgozó"
+}

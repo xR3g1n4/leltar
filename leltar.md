@@ -73,8 +73,3 @@
     ("XLOV", "I, god", 13000, "Új", 17),
     ("MEOVV", "Bite Now", 7000, "Új", 69),
     ("LE SSERAFIM". "SPAGHETTI", 8500, "Új", 12);
-
-
-
-
-

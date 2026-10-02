@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leltárkezelő – The Bias Wrecker</title>
+<style>
+  :root {
+    --bg: #2b1a63;
+    --side: #1b1036;
+    --panel: #38247a;
+    --field: #4a3396;
+    --line: rgba(255, 255, 255, .09);
+    --text: #f1eaff;
+    --muted: #b9a8e6;
+    --accent: #c9a2ff;
+    --accent-ink: #2a1560;
+    --new-bg: #14423b;   --new-fg: #4fe3ae;
+    --open-bg: #4d3a12;  --open-fg: #ffc857;
+    --bad-bg: #5b1830;   --bad-fg: #ff8aa3;
+    --bad-row: rgba(120, 20, 45, .55);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #130a2b;
+    color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .app {
+    width: 100%; max-width: 1180px; height: min(860px, calc(100vh - 32px));
+    display: grid; grid-template-columns: 220px 1fr;
+    background: var(--bg); border-radius: 22px; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .5);
+  }
+
+  /* ---------- Oldalsáv ---------- */
+  .side { background: var(--side); padding: 22px 14px 18px; display: flex; flex-direction: column; }
+  .brand { display: flex; gap: 10px; align-items: center; padding: 0 6px 22px; }
+  .logo { width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg, #6d5aa8, #3b2a74); flex: none; }
+  .shop { font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+  .role { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .grp { font-size: 10px; color: var(--muted); margin: 6px 6px 8px; letter-spacing: .06em; }
+  .nav {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    background: none; border: 0; border-radius: 8px; padding: 9px 10px;
+    font-size: 12px; font-weight: 600; color: var(--muted); text-align: left; cursor: pointer;
+  }
+  .nav.active { background: var(--accent); color: var(--accent-ink); }
+  .nav svg { width: 14px; height: 14px; flex: none; }
+  .side-foot {
+    margin-top: auto; display: flex; justify-content: space-between; align-items: center;
+    padding: 0 6px; font-size: 11px; color: var(--muted);
+  }
+  .side-foot button { background: none; border: 0; padding: 4px 0; cursor: pointer; color: inherit; }
+  .side-foot button:hover { color: var(--text); }
+
+  /* ---------- Fő rész ---------- */
+  main { padding: 18px 20px 20px; overflow: hidden; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+  .upload {
+    display: grid; grid-template-columns: 1.4fr 1.2fr .8fr 1fr 1fr auto; gap: 8px;
+    background: var(--panel); padding: 10px; border-radius: 14px;
+  }
+  .upload input, .upload select {
+    width: 100%; min-width: 0; height: 40px; border: 0; border-radius: 10px;
+    background: var(--field); padding: 0 12px; font-size: 12px; font-weight: 700; text-align: center;
+    color: var(--accent); appearance: none; -moz-appearance: textfield;
+  }
+  .upload input::placeholder { color: var(--accent); text-transform: uppercase; opacity: .9; }
+  .upload input:valid:not(:placeholder-shown), .upload select:valid { color: var(--text); }
+  .upload input::-webkit-outer-spin-button, .upload input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .upload select option { background: #2a1a63; color: var(--text); }
+  .upload .go {
+    height: 40px; padding: 0 22px; border: 0; border-radius: 10px; cursor: pointer;
+    background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 13px; letter-spacing: .03em;
+  }
+  .upload .go:disabled { opacity: .6; cursor: wait; }
+
+  .filters { display: grid; grid-template-columns: auto 1.2fr 1.2fr .8fr; gap: 8px; align-items: center;
+    background: var(--panel); padding: 8px 10px; border-radius: 14px; }
+  .filters svg { width: 16px; height: 16px; color: var(--muted); margin: 0 4px; }
+  .filters select {
+    width: 100%; height: 34px; border: 0; border-radius: 9px; background: var(--field);
+    padding: 0 12px; font-size: 12px; font-weight: 700; color: var(--accent); cursor: pointer;
+  }
+  .filters select option { background: #2a1a63; color: var(--text); }
+  .filters select:last-child { font-size: 10px; }
+
+  /* ---------- Készletállomány ---------- */
+  .stock { background: var(--panel); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; min-height: 0; flex: 1; }
+  .stock-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .stock-head h1 { font-size: 15px; margin: 0; font-weight: 700; }
+  .legend { display: flex; gap: 12px; font-size: 10px; color: var(--muted); }
+  .legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; background: currentColor; }
+  .legend .l-new::before { background: var(--new-fg); }
+  .legend .l-open::before { background: var(--open-fg); }
+  .legend .l-bad::before { background: var(--bad-fg); }
+
+  .cols, .row { display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: 10px; align-items: center; }
+  .cols { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .05em; padding: 6px 10px 8px; text-align: center; border-bottom: 1px solid var(--line); }
+  .cols :first-child { text-align: left; padding-left: 62px; }
+  .list { overflow-y: auto; flex: 1; margin-top: 2px; }
+  .row { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: center; font-size: 12px; font-weight: 600; }
+  .row.is-bad { background: var(--bad-row); border-radius: 8px; border-bottom-color: transparent; }
+  .c-name { display: flex; align-items: center; gap: 12px; text-align: left; min-width: 0; }
+  .thumb { width: 44px; height: 44px; border-radius: 6px; flex: none; background: linear-gradient(135deg, #7d7aa6, #51507a); }
+  .name { font-size: 11.5px; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+  .name small { display: block; font-size: 9.5px; color: var(--bad-fg); letter-spacing: .03em; }
+  .c-price { font-size: 13px; font-weight: 700; white-space: nowrap; }
+
+  .pill {
+    width: 100%; max-width: 92px; height: 28px; border: 0; border-radius: 14px; text-align: center; text-align-last: center;
+    font-size: 11px; font-weight: 800; cursor: pointer; appearance: none;
+  }
+  .pill option { background: #2a1a63; color: var(--text); }
+  .pill.st-uj { background: var(--new-bg); color: var(--new-fg); }
+  .pill.st-bontott { background: var(--open-bg); color: var(--open-fg); }
+  .pill.st-serult { background: var(--bad-bg); color: var(--bad-fg); box-shadow: inset 0 0 0 1px rgba(255, 138, 163, .35); }
+
+  .c-stock { display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .qty-btn {
+    width: 24px; height: 24px; border-radius: 50%; border: 0; cursor: pointer; line-height: 1;
+    background: var(--field); color: var(--text); font-size: 15px; font-weight: 700;
+    display: grid; place-items: center;
+  }
+  .qty-btn:hover:not(:disabled) { background: var(--accent); color: var(--accent-ink); }
+  .qty-btn:disabled { opacity: .35; cursor: not-allowed; }
+  .qty { min-width: 28px; font-size: 13px; font-weight: 800; color: var(--new-fg); }
+  .row.is-bad .qty { color: var(--bad-fg); }
+
+  .empty { padding: 40px 10px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0;
+    background: #1b1036; border: 1px solid var(--accent); color: var(--text);
+    padding: 10px 16px; border-radius: 10px; font-size: 13px; transition: .2s; pointer-events: none; z-index: 9;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast.err { border-color: var(--bad-fg); color: var(--bad-fg); }
+
+  /* ---------- Kisebb képernyők ---------- */
+  @media (max-width: 860px) {
+    body { padding: 0; align-items: stretch; }
+    .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: 100vh; border-radius: 0; max-width: none; }
+    .side { flex-direction: row; align-items: center; gap: 10px; padding: 10px 14px; flex-wrap: wrap; }
+    .brand { padding: 0; }
+    .grp, .nav:not(.active) { display: none; }
+    .nav { width: auto; }
+    .side-foot { margin: 0 0 0 auto; gap: 12px; }
+    .upload { grid-template-columns: 1fr 1fr 1fr; }
+    .upload .go { grid-column: 1 / -1; }
+    .filters { grid-template-columns: 1fr 1fr; }
+    .filters svg { display: none; }
+    .filters select:last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 620px) {
+    main { padding: 12px; overflow-y: auto; }
+    .cols { display: none; }
+    .list { overflow: visible; flex: none; }
+    .stock { flex: none; }
+    .row { grid-template-columns: 1fr auto; row-gap: 8px; text-align: left; }
+    .c-name { grid-column: 1 / -1; }
+    .c-artist { color: var(--muted); }
+    .c-price { text-align: right; }
+    .c-stock { justify-content: flex-end; }
+    .pill { max-width: 100px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <div class="shop">THE BIAS WRECKER</div>
+        <div class="role" id="role">Dolgozó</div>
+      </div>
+    </div>
+    <div class="grp">FŐ MODULOK</div>
+    <button class="nav active" type="button" aria-current="page">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6.5h12"/></svg>
+      Leltárkezelő
+    </button>
+    <button class="nav" type="button" id="help">Súgó és Tudásbázis</button>
+    <div class="side-foot">
+      <button type="button" id="logout">Kijelentkezés</button>
+      <span title="Esc billentyű">ESC</span>
+    </div>
+  </aside>
+
+  <main>
+    <form class="upload" id="uploadForm" autocomplete="off">
+      <input name="album" placeholder="Album" aria-label="Album" required maxlength="120">
+      <input name="artist" placeholder="Előadó" aria-label="Előadó" required maxlength="80">
+      <input name="price" type="number" min="0" step="1" placeholder="Ár" aria-label="Ár (Ft)" required>
+      <select name="status" aria-label="Státusz">
+        <option value="" selected>Státusz</option>
+        <option>Új</option><option>Bontott</option><option>Sérült</option>
+      </select>
+      <input name="storage" type="number" min="0" step="1" placeholder="Készlet" aria-label="Készlet (db)" required>
+      <button class="go" type="submit">FELTÖLTÉS</button>
+    </form>
+
+    <div class="filters">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>
+      <select id="fArtist" aria-label="Szűrés előadóra"></select>
+      <select id="fAlbum" aria-label="Szűrés albumra"></select>
+      <select id="fSort" aria-label="Rendezés">
+        <option value="">Rendezés</option>
+        <option value="album">Album (A–Z)</option>
+        <option value="artist">Előadó (A–Z)</option>
+        <option value="price-asc">Ár (növekvő)</option>
+        <option value="price-desc">Ár (csökkenő)</option>
+        <option value="storage-asc">Készlet (növekvő)</option>
+        <option value="storage-desc">Készlet (csökkenő)</option>
+      </select>
+    </div>
+
+    <section class="stock">
+      <div class="stock-head">
+        <h1>Készletállomány</h1>
+        <div class="legend"><span class="l-new">Új</span><span class="l-open">Bontott</span><span class="l-bad">Sérült</span></div>
+      </div>
+      <div class="cols" aria-hidden="true">
+        <div>TERMÉKNÉV</div><div>ELŐADÓ</div><div>ÁR</div><div>STÁTUSZ</div><div>KÉSZLET</div>
+      </div>
+      <div class="list" id="list" aria-live="polite"></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) location.replace('/login.html');
+
+const STATUSES = ['Új', 'Bontott', 'Sérült'];
+const STATUS_CLASS = { 'Új': 'st-uj', 'Bontott': 'st-bontott', 'Sérült': 'st-serult' };
+
+let products = [];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmtPrice = (n) => Number(n).toLocaleString('hu-HU') + ' Ft';
+
+/* ---------- API ---------- */
+async function api(path, options = {}) {
+  const res = await fetch('/api' + path, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token, ...(options.headers || {}) },
+  });
+  if (res.status === 401) {
+    localStorage.removeItem('token');
+    location.replace('/login.html');
+    throw new Error('Lejárt a munkamenet.');
+  }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Valami hiba történt.');
+  return data;
+}
+
+let toastTimer;
+function toast(msg, isError = false) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.toggle('err', isError);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ---------- Megjelenítés ---------- */
+function rowHTML(p) {
+  const bad = p.status === 'Sérült';
+  const options = STATUSES.map((s) => `<option${s === p.status ? ' selected' : ''}>${s}</option>`).join('');
+  return `
+  <div class="row${bad ? ' is-bad' : ''}" data-id="${p.id}">
+    <div class="c-name">
+      <span class="thumb" aria-hidden="true"></span>
+      <span class="name">${esc(p.album)}${bad ? '<small>(SÉRÜLT)</small>' : ''}</span>
+    </div>
+    <div class="c-artist">${esc(p.artist)}</div>
+    <div class="c-price">${fmtPrice(p.price)}</div>
+    <div class="c-status">
+      <select class="pill ${STATUS_CLASS[p.status] || ''}" data-act="status" aria-label="Státusz: ${esc(p.album)}">${options}</select>
+    </div>
+    <div class="c-stock">
+      <button class="qty-btn" data-act="dec" type="button" aria-label="Készlet csökkentése"${p.storage <= 0 ? ' disabled' : ''}>−</button>
+      <span class="qty">${p.storage}</span>
+      <button class="qty-btn" data-act="inc" type="button" aria-label="Készlet növelése">+</button>
+    </div>
+  </div>`;
+}
+
+function fillSelect(sel, firstLabel, values, current) {
+  sel.innerHTML = `<option value="">${firstLabel}</option>` +
+    values.map((v) => `<option value="${esc(v)}"${v === current ? ' selected' : ''}>${esc(v)}</option>`).join('');
+  if (!values.includes(current)) sel.value = '';
+}
+
+function refreshFilters() {
+  const artist = $('fArtist').value;
+  const artists = [...new Set(products.map((p) => p.artist))].sort((a, b) => a.localeCompare(b, 'hu'));
+  fillSelect($('fArtist'), 'Összes előadó', artists, artist);
+
+  const pool = $('fArtist').value ? products.filter((p) => p.artist === $('fArtist').value) : products;
+  const albums = [...new Set(pool.map((p) => p.album))].sort((a, b) => a.localeCompare(b, 'hu'));
+  fillSelect($('fAlbum'), 'Összes album', albums, $('fAlbum').value);
+}
+
+function visibleProducts() {
+  const artist = $('fArtist').value, album = $('fAlbum').value, sort = $('fSort').value;
+  let list = products.filter((p) => (!artist || p.artist === artist) && (!album || p.album === album));
+  const by = {
+    'album': (a, b) => a.album.localeCompare(b.album, 'hu'),
+    'artist': (a, b) => a.artist.localeCompare(b.artist, 'hu'),
+    'price-asc': (a, b) => a.price - b.price,
+    'price-desc': (a, b) => b.price - a.price,
+    'storage-asc': (a, b) => a.storage - b.storage,
+    'storage-desc': (a, b) => b.storage - a.storage,
+  }[sort];
+  if (by) list = [...list].sort(by);
+  return list;
+}
+
+function render() {
+  const list = visibleProducts();
+  $('list').innerHTML = list.length
+    ? list.map(rowHTML).join('')
+    : `<div class="empty">${products.length
+        ? 'Nincs a szűrésnek megfelelő termék.<br>Válaszd az „Összes" lehetőséget, vagy vigyél fel új terméket.'
+        : 'Még nincs termék a raktárban.<br>Töltsd fel az elsőt a fenti sávban.'}</div>`;
+}
+
+function replaceRow(updated) {
+  const i = products.findIndex((p) => p.id === updated.id);
+  if (i >= 0) products[i] = updated;
+  const old = document.querySelector(`.row[data-id="${updated.id}"]`);
+  if (!old) return render();
+  old.outerHTML = rowHTML(updated);
+}
+
+/* ---------- Műveletek ---------- */
+async function loadProducts() {
+  products = await api('/products');
+  refreshFilters();
+  render();
+}
+
+$('list').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const id = Number(btn.closest('.row').dataset.id);
+  const change = btn.dataset.act === 'inc' ? 1 : -1;
+  btn.disabled = true;
+  try {
+    const updated = await api(`/products/${id}/stock`, { method: 'PATCH', body: JSON.stringify({ change }) });
+    replaceRow(updated);
+  } catch (err) {
+    toast(err.message, true);
+    render();
+    return;
+  }
+  document.querySelector(`.row[data-id="${id}"] [data-act="${btn.dataset.act}"]`)?.focus({ preventScroll: true });
+});
+
+$('list').addEventListener('change', async (e) => {
+  const sel = e.target.closest('select[data-act="status"]');
+  if (!sel) return;
+  const id = Number(sel.closest('.row').dataset.id);
+  try {
+    const updated = await api(`/products/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status: sel.value }) });
+    replaceRow(updated);
+    toast(`Státusz módosítva: ${updated.status}`);
+  } catch (err) {
+    toast(err.message, true);
+    render();
+  }
+});
+
+$('uploadForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const fd = new FormData(form);
+  const body = {
+    album: fd.get('album').trim(),
+    artist: fd.get('artist').trim(),
+    price: parseInt(fd.get('price'), 10),
+    status: fd.get('status') || 'Új',
+    storage: parseInt(fd.get('storage'), 10),
+  };
+  const submit = form.querySelector('.go');
+  submit.disabled = true;
+  try {
+    const created = await api('/products', { method: 'POST', body: JSON.stringify(body) });
+    products.push(created);
+    form.reset();
+    refreshFilters();
+    render();
+    toast(`Feltöltve: ${created.artist} – ${created.album}`);
+  } catch (err) {
+    toast(err.message, true);
+  } finally {
+    submit.disabled = false;
+  }
+});
+
+['fArtist', 'fAlbum', 'fSort'].forEach((id) =>
+  $(id).addEventListener('change', () => {
+    if (id === 'fArtist') refreshFilters(); // az album lista az előadóhoz igazodik
+    render();
+  })
+);
+
+async function logout() {
+  try { await api('/auth/logout', { method: 'POST' }); } catch {}
+  localStorage.removeItem('token');
+  location.replace('/login.html');
+}
+$('logout').addEventListener('click', logout);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.activeElement === document.body && confirm('Biztosan kijelentkezel?')) logout();
+});
+$('help').addEventListener('click', () => toast('A súgó még készül.'));
+
+/* ---------- Indítás ---------- */
+(async () => {
+  try {
+    const me = await api('/auth/me');
+    $('role').textContent = me.role;
+    $('role').title = me.username;
+    await loadProducts();
+  } catch (err) {
+    toast(err.message, true);
+  }
+})();
+</script>
+</body>
+</html>
