@@ -49,6 +49,31 @@
   </main>
 
   <script>
+
+document.querySelector('form').addEventListener('submit', async (e) => {
+  e.preventDefault(); // ne az űrlap küldje el, hanem ez a kód
+
+  const form = e.currentTarget;
+  const username = form.querySelector('input[type="text"]').value.trim();
+  const password = form.querySelector('input[type="password"]').value;
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) return alert(data.error || 'Sikertelen bejelentkezés.');
+
+    localStorage.setItem('token', data.token);
+    location.href = '/leltar.html';
+  } catch {
+    alert('A szerver nem érhető el.');
+  }
+});
+
     const pw = document.getElementById("password");
     const toggle = document.querySelector(".toggle-pw");
 
