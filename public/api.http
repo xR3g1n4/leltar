@@ -1,0 +1,240 @@
+@baseUrl = http://localhost:3000
+
+###############################################################
+# 1. HITELESÍTÉS (/api/auth)
+###############################################################
+
+### 1. Admin bejelentkezés
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Nagy Anna",
+  "password": "pass111"
+}
+
+### 2. Bejelentkezett felhasználó adatai
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{login.response.body.token}}
+
+### 3. Hibás jelszó (401)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Nagy Anna",
+  "password": "rossz-jelszo"
+}
+
+### 4. Token nélküli kérés (401)
+GET {{baseUrl}}/api/auth/me
+
+###############################################################
+# 2. FELHASZNÁLÓKEZELÉS (/api/users) – csak Admin
+
+
+### 5. Felhasználó regisztráció
+# @name newUser
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "username": "harmadik",
+  "password": "pass123",
+  "role": "Dolgozó"
+}
+
+### 6. Ugyanaz a felhasználónév még egyszer (409)
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "username": "harmadik",
+  "password": "pass123",
+  "role": "Dolgozó"
+}
+
+### 7. Összes felhasználó listázása
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{login.response.body.token}}
+
+### 8. Felhasználó részleges módosítása (PATCH): új jelszó
+PATCH {{baseUrl}}/api/users/{{newUser.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "password": "pass456"
+}
+
+### 9. Felhasználó módosítása (PUT): vissza az eredeti jelszóra
+PUT {{baseUrl}}/api/users/{{newUser.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "username": "harmadik",
+  "password": "pass123",
+  "role": "Dolgozó"
+}
+
+### 10. Dolgozó bejelentkezése
+# @name workerLogin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "harmadik",
+  "password": "pass123"
+}
+
+### 11. Dolgozóként a felhasználólista tiltott (403)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+###############################################################
+# 3. TERMÉK- ÉS RAKTÁRKEZELÉS (/api/products)
+
+
+### 12. Összes termék listázása
+GET {{baseUrl}}/api/products
+Authorization: Bearer {{login.response.body.token}}
+
+### 13. Szűrés előadóra, albumra és státuszra
+GET {{baseUrl}}/api/products?artist=Stray&album=Karma&status=Új
+Authorization: Bearer {{login.response.body.token}}
+
+### 14. Egy termék lekérése
+GET {{baseUrl}}/api/products/1
+Authorization: Bearer {{login.response.body.token}}
+
+### 15. Nem létező termék (404)
+GET {{baseUrl}}/api/products/9999
+Authorization: Bearer {{login.response.body.token}}
+
+### 16. Új termék felvitele (dolgozóként is engedélyezett)
+# @name newProduct
+POST {{baseUrl}}/api/products
+Content-Type: application/json
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+{
+  "artist": "NewJeans",
+  "album": "Get Up",
+  "price": 11500,
+  "status": "Új",
+  "storage": 14
+}
+
+### 17. Hiányzó mező termék felvitelnél (400)
+POST {{baseUrl}}/api/products
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "artist": "NewJeans"
+}
+
+### 18. Készlet növelése 5-tel
+PATCH {{baseUrl}}/api/products/{{newProduct.response.body.id}}/stock
+Content-Type: application/json
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+{
+  "change": 5
+}
+
+### 19. Készlet csökkentése 3-mal
+PATCH {{baseUrl}}/api/products/{{newProduct.response.body.id}}/stock
+Content-Type: application/json
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+{
+  "change": -3
+}
+
+### 20. Túl nagy csökkentés (400)
+PATCH {{baseUrl}}/api/products/{{newProduct.response.body.id}}/stock
+Content-Type: application/json
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+{
+  "change": -9999
+}
+
+### 21. Státusz módosítása (Új / Bontott / Sérült)
+PATCH {{baseUrl}}/api/products/{{newProduct.response.body.id}}/status
+Content-Type: application/json
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+{
+  "status": "Bontott"
+}
+
+### 22. Érvénytelen státusz (400)
+PATCH {{baseUrl}}/api/products/{{newProduct.response.body.id}}/status
+Content-Type: application/json
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+{
+  "status": "Törött"
+}
+
+### 23. Dolgozóként ár módosítása tiltott (403)
+PATCH {{baseUrl}}/api/products/{{newProduct.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+{
+  "price": 1
+}
+
+### 24. Termék részleges módosítása (PATCH, Admin): új ár
+PATCH {{baseUrl}}/api/products/{{newProduct.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "price": 12500
+}
+
+### 25. Termék teljes módosítása (PUT, Admin)
+PUT {{baseUrl}}/api/products/{{newProduct.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "artist": "NewJeans",
+  "album": "Get Up (Bunny Beach Bag Ver.)",
+  "price": 11500,
+  "status": "Új",
+  "storage": 20
+}
+
+### 26. Termék törlése (Admin)
+DELETE {{baseUrl}}/api/products/{{newProduct.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+###############################################################
+# 4. TAKARÍTÁS ÉS KIJELENTKEZÉS
+
+
+### 27. Felhasználó törlése (Admin)
+DELETE {{baseUrl}}/api/users/{{newUser.response.body.id}}
+Authorization: Bearer {{login.response.body.token}}
+
+### 28. Dolgozó kijelentkezése
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+### 29. Admin kijelentkezése
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{login.response.body.token}}
+
+### 30. Kijelentkezés után a token már nem érvényes (401)
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{login.response.body.token}}
+
