@@ -1,3 +1,5 @@
+Ha jelszó módósításravan sükség:
+
 const sqlite3 = require('sqlite3');
 const bcrypt = require('bcryptjs');
 
