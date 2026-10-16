@@ -10,4 +10,5 @@ db.run("UPDATE users SET password = ? WHERE username = 'Nagy Anna'", [hash], fun
 });
 
 
-//Katika = pass123
+//Katika = pass123 (dolgozó)
+//Szép Ilonka = ADMINKA (Admin)

@@ -1,5 +1,3 @@
-// server.js – Leltár API
-// Telepítés: npm install express sqlite3 bcryptjs jsonwebtoken cors
 // Indítás:   node server.js
 
 const express = require('express');
@@ -21,7 +19,7 @@ const ROLE_WORKER = 'Dolgozó';
 const VALID_ROLES = [ROLE_ADMIN, ROLE_WORKER];
 
 // ---------------------------------------------------------------------------
-// Adatbázis (promise-os segédfüggvényekkel)
+// Adatbázis
 // ---------------------------------------------------------------------------
 const db = new sqlite3.Database(DB_FILE);
 
@@ -53,7 +51,7 @@ async function initDb() {
   }
 }
 
-// A táblákban nincs id oszlop, ezért a SQLite beépített rowid-ját használjuk id-ként.
+
 const USER_COLS = 'rowid AS id, username, role';
 const PRODUCT_COLS = 'rowid AS id, artist, album, price, status, storage';
 
@@ -64,10 +62,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const revokedTokens = new Set(); // kijelentkezett tokenek (memóriában)
+const revokedTokens = new Set(); // kijelentkezett token
 
 // Oldalvédelem: a böngésző az oldalnavigációnál cookie-ban küldi a tokent
-// (az API továbbra is csak az Authorization: Bearer fejlécet fogadja el)
 const COOKIE = 'HttpOnly; SameSite=Lax; Path=/';
 const pageUser = (req) => {
   const t = (/(?:^|;\s*)token=([^;]+)/.exec(req.headers.cookie || '') || [])[1];
@@ -84,7 +81,7 @@ app.get('/leltar.html', page('leltar.html'));
 app.get('/sugo.html', page('sugo.html'));
 app.get('/felhasznalok.html', page('felhasznalok.html', true));
 
-// Frontend (static/login.html, app.css, app.js, ...)
+// Frontend
 app.use(express.static(staticDir));
 app.get('/', (req, res) => res.redirect('/login.html'));
 
@@ -122,11 +119,12 @@ const wrap = (fn) => (req, res) =>
 
 const isInt = (v) => Number.isInteger(v);
 
+
+
 // ---------------------------------------------------------------------------
-// 1. Hitelesítés és felhasználókezelés (/api/auth & /api/users)
+// 1. Hitelesítés és felhasználókezelés 
 // ---------------------------------------------------------------------------
 
-// POST /api/auth/login – Nyilvános
 app.post('/api/auth/login', wrap(async (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password)
@@ -145,26 +143,26 @@ app.post('/api/auth/login', wrap(async (req, res) => {
   res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
 }));
 
-// POST /api/auth/logout – Bejelentkezett
+//Bejelentkezett
 app.post('/api/auth/logout', authenticate, (req, res) => {
   revokedTokens.add(req.token);
   res.setHeader('Set-Cookie', `token=; ${COOKIE}; Max-Age=0`);
   res.json({ message: 'Sikeres kijelentkezés.' });
 });
 
-// GET /api/auth/me – Bejelentkezett
+// Bejelentkezett
 app.get('/api/auth/me', authenticate, wrap(async (req, res) => {
   const user = await get(`SELECT ${USER_COLS} FROM users WHERE rowid = ?`, [req.user.id]);
   if (!user) return res.status(404).json({ error: 'A felhasználó nem található.' });
   res.json(user);
 }));
 
-// GET /api/users – Admin
+// Admin
 app.get('/api/users', authenticate, requireAdmin, wrap(async (req, res) => {
   res.json(await all(`SELECT ${USER_COLS} FROM users ORDER BY rowid`));
 }));
 
-// POST /api/users – Admin
+// Admin
 app.post('/api/users', authenticate, requireAdmin, wrap(async (req, res) => {
   const { username, password, role } = req.body || {};
   if (!username || !password || !role)
@@ -211,7 +209,7 @@ const updateUser = wrap(async (req, res) => {
 app.put('/api/users/:id', authenticate, requireAdmin, updateUser);
 app.patch('/api/users/:id', authenticate, requireAdmin, updateUser);
 
-// DELETE /api/users/:id – Admin
+// DELETE Admin
 app.delete('/api/users/:id', authenticate, requireAdmin, wrap(async (req, res) => {
   const id = Number(req.params.id);
   if (id === req.user.id)
@@ -221,11 +219,13 @@ app.delete('/api/users/:id', authenticate, requireAdmin, wrap(async (req, res) =
   res.json({ message: 'Felhasználó törölve.' });
 }));
 
+
+
 // ---------------------------------------------------------------------------
-// 2. Termék- és raktárkezelés (/api/products)
+// 2. Termék- és raktárkezelés
 // ---------------------------------------------------------------------------
 
-// GET /api/products?artist=&album=&status= – Bejelentkezett
+
 app.get('/api/products', authenticate, wrap(async (req, res) => {
   const where = [];
   const params = [];

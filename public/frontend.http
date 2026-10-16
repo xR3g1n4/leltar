@@ -1,0 +1,143 @@
+@baseUrl = http://localhost:3000
+
+
+###############################################################
+# 1. STATIKUS FÁJLOK (bejelentkezés nélkül is elérhetők)
+
+
+### 1. Bejelentkező oldal (200)
+GET {{baseUrl}}/login.html
+
+### 2. Bejelentkező oldal stílusa (200)
+GET {{baseUrl}}/login.css
+
+### 3. Közös stílus (200)
+GET {{baseUrl}}/app.css
+
+### 4. Közös script (200)
+GET {{baseUrl}}/app.js
+
+### 5. Főoldal átirányít a bejelentkezésre (302 -> /login.html)
+# @no-redirect
+GET {{baseUrl}}/
+
+### 6. Nem létező oldal (404)
+GET {{baseUrl}}/nincs-ilyen-oldal.html
+
+
+
+###############################################################
+# 3. ADMIN: MINDEN OLDAL ELÉRHETŐ
+
+
+### 10. Admin bejelentkezés 
+# @name adminLogin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Nagy Anna",
+  "password": "pass111"
+}
+
+### 11. Leltárkezelő adminként (200)
+GET {{baseUrl}}/leltar.html
+
+### 12. Súgó adminként (200)
+GET {{baseUrl}}/sugo.html
+
+### 13. Felhasználók oldal adminként (200)
+GET {{baseUrl}}/felhasznalok.html
+
+### 14. Az oldalak által használt adatok: saját adatok
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+### 15. Felhasználók oldal adatai (200)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+### 16. Leltárkezelő adatai (200)
+GET {{baseUrl}}/api/products
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+### 17. Teszt dolgozó létrehozása a dolgozói oldalakhoz
+# @name testWorker
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+{
+  "username": "frontteszt",
+  "password": "pass123",
+  "role": "Dolgozó"
+}
+
+### 18. Admin kijelentkezés 
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+
+
+
+###############################################################
+# 4. DOLGOZÓ: A FELHASZNÁLÓK OLDAL NEM ÉRHETŐ EL
+
+
+### 20. Dolgozó bejelentkezés
+# @name workerLogin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "frontteszt",
+  "password": "pass123"
+}
+
+### 21. Leltárkezelő dolgozóként (200)
+GET {{baseUrl}}/leltar.html
+
+### 22. Súgó dolgozóként (200)
+GET {{baseUrl}}/sugo.html
+
+### 23. Felhasználók oldal dolgozóként (302 -> /leltar.html)
+GET {{baseUrl}}/felhasznalok.html
+
+### 24. Felhasználók adatai dolgozóként (403)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+### 25. Termékek listázása dolgozóként (200)
+GET {{baseUrl}}/api/products
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+### 26. Termék törlése dolgozóként tiltott (403)
+DELETE {{baseUrl}}/api/products/1
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+### 27. Dolgozó kijelentkezés
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{workerLogin.response.body.token}}
+
+
+
+###############################################################
+# 5. Tesztadat törlés
+
+### 29. Admin bejelentkezés a takarításhoz
+# @name adminLogin2
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Nagy Anna",
+  "password": "pass111"
+}
+
+### 30. Teszt dolgozó törlése
+DELETE {{baseUrl}}/api/users/{{testWorker.response.body.id}}
+Authorization: Bearer {{adminLogin2.response.body.token}}
+
+### 31. Admin kijelentkezés
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{adminLogin2.response.body.token}}
