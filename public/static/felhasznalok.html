@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Felhasználók – The Bias Wrecker</title>
+<link rel="stylesheet" href="/app.css">
+<style>
+  .add{grid-template-columns:1.4fr 1fr 1fr auto}
+  .filters{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;background:var(--panel);padding:8px 10px;border-radius:14px}
+  .filters .f{height:34px}
+  .row{display:grid;grid-template-columns:44px 1.4fr 1fr 36px;gap:10px;align-items:center;padding:12px 8px;border-bottom:1px solid var(--line);font-size:13px;font-weight:700}
+  .row:last-child{border-bottom:0}
+  .num{text-align:center}
+  .role-sel{background:none;border:0;font-weight:700;font-size:13px;text-align:center;text-align-last:center;cursor:pointer;appearance:none;border-radius:8px;padding:6px}
+  .role-sel:hover:not(:disabled){background:var(--field)}.role-sel:disabled{cursor:default}
+  .role-sel option{background:#2a1a63}
+  .del{width:28px;height:28px;border:0;border-radius:50%;background:none;color:var(--muted);font-size:16px;cursor:pointer}
+  .del:hover:not(:disabled){background:var(--bad);color:var(--ink)}.del:disabled{opacity:.25;cursor:not-allowed}
+  .empty{padding:30px;text-align:center;color:var(--muted);font-size:13px}
+  @media(max-width:700px){.add,.filters{grid-template-columns:1fr 1fr}.btn{grid-column:1/-1}.row{grid-template-columns:30px 1fr 1fr 32px;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="shop">THE BIAS WRECKER</div><div class="role" id="role">Admin</div></div>
+    <div class="grp">FŐ MODULOK</div>
+    <a class="nav" href="/leltar.html">Leltárkezelő</a>
+    <a class="nav active" href="/felhasznalok.html" data-admin aria-current="page">Felhasználók</a>
+    <a class="nav" href="/sugo.html">Súgó és Tudásbázis</a>
+    <div class="side-foot"><button type="button" id="logout">Kijelentkezés</button></div>
+  </aside>
+
+  <main>
+    <form class="card" id="addForm" autocomplete="off">
+      <h1>Felhasználó hozzáadás</h1>
+      <div class="bar add">
+        <input class="f" name="username" placeholder="Felhasználó neve" aria-label="Felhasználó neve" required maxlength="60">
+        <input class="f" name="password" type="password" placeholder="Jelszó" aria-label="Jelszó" required minlength="4" autocomplete="new-password">
+        <select class="f" name="role" aria-label="Munkakör" required>
+          <option value="" selected disabled>Munkakör</option><option>Dolgozó</option><option>Adminisztrátor</option>
+        </select>
+        <button class="btn" type="submit">FELTÖLTÉS</button>
+      </div>
+    </form>
+
+    <div class="filters">
+      <input class="f" id="q" type="search" placeholder="Keresés név szerint" aria-label="Keresés név szerint">
+      <select class="f" id="fRole" aria-label="Szűrés munkakörre">
+        <option value="">Összes munkakör</option><option>Dolgozó</option><option>Adminisztrátor</option>
+      </select>
+      <select class="f" id="fSort" aria-label="Rendezés">
+        <option value="">Rendezés</option><option value="az">Név (A–Z)</option><option value="za">Név (Z–A)</option><option value="role">Munkakör</option>
+      </select>
+    </div>
+
+    <section class="card">
+      <h1>Felhasználók</h1>
+      <div id="list" aria-live="polite"></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="/app.js"></script>
+<script>
+let users = [], me;
+
+function visible() {
+  const q = $('q').value.trim().toLowerCase(), role = $('fRole').value, sort = $('fSort').value;
+  let l = users.filter((u) => (!role || u.role === role) && u.username.toLowerCase().includes(q));
+  const cmp = { az: (a, b) => a.username.localeCompare(b.username, 'hu'), za: (a, b) => b.username.localeCompare(a.username, 'hu'),
+    role: (a, b) => a.role.localeCompare(b.role, 'hu') || a.username.localeCompare(b.username, 'hu') }[sort];
+  return cmp ? [...l].sort(cmp) : l;
+}
+
+function render() {
+  const l = visible();
+  $('list').innerHTML = l.length ? l.map((u, i) => {
+    const self = u.id === me.id;
+    return `<div class="row" data-id="${u.id}">
+      <span class="num">${i + 1}.</span><span>${esc(u.username)}${self ? ' (te)' : ''}</span>
+      <select class="role-sel" aria-label="Munkakör: ${esc(u.username)}"${self ? ' disabled' : ''}>
+        ${['Dolgozó', 'Adminisztrátor'].map((r) => `<option${r === u.role ? ' selected' : ''}>${r}</option>`).join('')}
+      </select>
+      <button class="del" type="button" aria-label="Törlés: ${esc(u.username)}"${self ? ' disabled' : ''}>×</button></div>`;
+  }).join('') : '<div class="empty">Nincs a szűrésnek megfelelő felhasználó.</div>';
+}
+
+$('addForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget, fd = new FormData(form), btn = form.querySelector('.btn');
+  btn.disabled = true;
+  try {
+    const u = await api('/users', { method: 'POST', body: JSON.stringify({
+      username: fd.get('username').trim(), password: fd.get('password'), role: fd.get('role') }) });
+    users.push(u); form.reset(); render(); toast(`Felhasználó hozzáadva: ${u.username}`);
+  } catch (err) { toast(err.message, true); }
+  btn.disabled = false;
+});
+
+$('list').addEventListener('change', async (e) => {
+  if (!e.target.matches('.role-sel')) return;
+  const id = Number(e.target.closest('.row').dataset.id);
+  try {
+    const u = await api('/users/' + id, { method: 'PATCH', body: JSON.stringify({ role: e.target.value }) });
+    users = users.map((x) => (x.id === id ? u : x)); toast(`Munkakör módosítva: ${u.role}`);
+  } catch (err) { toast(err.message, true); }
+  render();
+});
+
+$('list').addEventListener('click', async (e) => {
+  if (!e.target.matches('.del')) return;
+  const id = Number(e.target.closest('.row').dataset.id), u = users.find((x) => x.id === id);
+  if (!confirm(`Biztosan törlöd: ${u.username}?`)) return;
+  try { await api('/users/' + id, { method: 'DELETE' }); users = users.filter((x) => x.id !== id); render(); toast('Felhasználó törölve.'); }
+  catch (err) { toast(err.message, true); }
+});
+
+['q', 'fRole', 'fSort'].forEach((id) => $(id).addEventListener('input', render));
+
+(async () => {
+  try {
+    me = await initPage(true);
+    if (me.role !== ADMIN) return;
+    users = await api('/users'); render();
+  } catch (err) { toast(err.message, true); }
+})();
+</script>
+</body>
+</html>
