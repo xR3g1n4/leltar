@@ -12,6 +12,7 @@ const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'valtoztasd-meg-ezt-a-titkot';
+const staticDir = path.join(__dirname, 'static');
 const DB_FILE = path.join(__dirname, 'leltar.db');
 const SQL_FILE = path.join(__dirname, 'leltar.sql');
 
@@ -41,8 +42,6 @@ const all = (sql, params = []) =>
 const exec = (sql) =>
   new Promise((resolve, reject) => db.exec(sql, (err) => (err ? reject(err) : resolve())));
 
-const staticDir = path.join(__dirname, 'static');
-console.log('Static mappa:', staticDir, fs.existsSync(path.join(staticDir, 'login.html')));
 // Első indításkor betölti a leltar.sql fájlt
 async function initDb() {
   const existing = await get(
@@ -65,11 +64,29 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Frontend (static/login.html, static/login.css, ...)
-app.use(express.static(path.join(__dirname, 'static')));
-app.get('/', (req, res) => res.redirect('/login.html'));
-
 const revokedTokens = new Set(); // kijelentkezett tokenek (memóriában)
+
+// Oldalvédelem: a böngésző az oldalnavigációnál cookie-ban küldi a tokent
+// (az API továbbra is csak az Authorization: Bearer fejlécet fogadja el)
+const COOKIE = 'HttpOnly; SameSite=Lax; Path=/';
+const pageUser = (req) => {
+  const t = (/(?:^|;\s*)token=([^;]+)/.exec(req.headers.cookie || '') || [])[1];
+  if (!t || revokedTokens.has(t)) return null;
+  try { return jwt.verify(t, JWT_SECRET); } catch { return null; }
+};
+const page = (file, adminOnly = false) => (req, res) => {
+  const u = pageUser(req);
+  if (!u) return res.redirect('/login.html');
+  if (adminOnly && u.role !== ROLE_ADMIN) return res.redirect('/leltar.html'); // csak admin látja
+  res.sendFile(path.join(staticDir, file));
+};
+app.get('/leltar.html', page('leltar.html'));
+app.get('/sugo.html', page('sugo.html'));
+app.get('/felhasznalok.html', page('felhasznalok.html', true));
+
+// Frontend (static/login.html, app.css, app.js, ...)
+app.use(express.static(staticDir));
+app.get('/', (req, res) => res.redirect('/login.html'));
 
 function authenticate(req, res, next) {
   const header = req.headers.authorization || '';
@@ -124,12 +141,14 @@ app.post('/api/auth/login', wrap(async (req, res) => {
     JWT_SECRET,
     { expiresIn: '8h' }
   );
+  res.setHeader('Set-Cookie', `token=${token}; ${COOKIE}; Max-Age=28800`);
   res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
 }));
 
 // POST /api/auth/logout – Bejelentkezett
 app.post('/api/auth/logout', authenticate, (req, res) => {
   revokedTokens.add(req.token);
+  res.setHeader('Set-Cookie', `token=; ${COOKIE}; Max-Age=0`);
   res.json({ message: 'Sikeres kijelentkezés.' });
 });
 
