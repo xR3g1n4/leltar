@@ -1,76 +1,172 @@
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Súgó és Tudásbázis – The Bias Wrecker</title>
-<link rel="stylesheet" href="/app.css">
-<style>
-  details{border-bottom:1px solid var(--line);padding:10px 4px}details:last-child{border:0}
-  summary{cursor:pointer;font-size:13px;font-weight:700}
-  details p,details li{font-size:13px;line-height:1.6;color:var(--muted);margin:8px 0 0}
-  details ul{margin:4px 0 0;padding-left:20px}
-  b{color:var(--text)}
-  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
-  th,td{padding:8px;border-bottom:1px solid var(--line);text-align:center}th:first-child,td:first-child{text-align:left}
-  th{color:var(--muted)}
-  .tag{font-size:10px;font-weight:800;background:var(--accent);color:var(--ink);border-radius:6px;padding:2px 6px;margin-left:6px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Súgó és Tudásbázis – The Bias Wrecker</title>
+  <link rel="stylesheet" href="/app.css">
+  <style>
+    details {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 4px
+    }
+
+    details:last-child {
+      border: 0
+    }
+
+    summary {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700
+    }
+
+    details p,
+    details li {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin: 8px 0 0
+    }
+
+    details ul {
+      margin: 4px 0 0;
+      padding-left: 20px
+    }
+
+    b {
+      color: var(--text)
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 8px
+    }
+
+    th,
+    td {
+      padding: 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: center
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left
+    }
+
+    th {
+      color: var(--muted)
+    }
+
+    .tag {
+      font-size: 10px;
+      font-weight: 800;
+      background: var(--accent);
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 2px 6px;
+      margin-left: 6px
+    }
+  </style>
 </head>
+
 <body>
-<div class="app">
-  <aside class="side">
-    <div class="brand"><div class="shop">THE BIAS WRECKER</div><div class="role" id="role">Dolgozó</div></div>
-    <div class="grp">FŐ MODULOK</div>
-    <a class="nav" href="/leltar.html">Leltárkezelő</a>
-    <a class="nav" href="/felhasznalok.html" data-admin hidden>Felhasználók</a>
-    <a class="nav active" href="/sugo.html" aria-current="page">Súgó és Tudásbázis</a>
-    <div class="side-foot"><button type="button" id="logout">Kijelentkezés</button></div>
-  </aside>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <div class="shop">THE BIAS WRECKER</div>
+        <div class="role" id="role">Dolgozó</div>
+      </div>
+      <div class="grp">FŐ MODULOK</div>
+      <a class="nav" href="/leltar.html">Leltárkezelő</a>
+      <a class="nav" href="/felhasznalok.html" data-admin hidden>Felhasználók</a>
+      <a class="nav active" href="/sugo.html" aria-current="page">Súgó és Tudásbázis</a>
+      <div class="side-foot"><button type="button" id="logout">Kijelentkezés</button></div>
+    </aside>
 
-  <main>
-    <section class="card">
-      <h1>Súgó és Tudásbázis</h1>
+    <main>
+      <section class="card">
+        <h1>Súgó és Tudásbázis</h1>
 
-      <details open><summary>Bejelentkezés és kijelentkezés</summary>
-        <p>Jelentkezz be a felhasználóneveddel és jelszavaddal. A munkamenet 8 óráig érvényes. Kilépni a bal alsó <b>Kijelentkezés</b> gombbal vagy az <b>Esc</b> billentyűvel lehet (megerősítést kér).</p></details>
+        <details>
+          <summary>Bejelentkezés és kijelentkezés</summary>
+          <p>Jelentkezz be a felhasználóneveddel és jelszavaddal. A munkamenet 8 óráig érvényes. Kilépni a bal alsó
+            <b>Kijelentkezés</b> gombbal lehet.</p>
+        </details>
 
-      <details><summary>Új termék felvitele</summary>
-        <p>A Leltárkezelő tetején töltsd ki az <b>Album, Előadó, Ár, Státusz</b> és <b>Készlet</b> mezőket, majd kattints a <b>FELTÖLTÉS</b> gombra. Ha a státuszt üresen hagyod, a termék „Új" lesz.</p></details>
+        <details>
+          <summary>Új termék felvitele</summary>
+          <p>A Leltárkezelő tetején töltsd ki az <b>Album, Előadó, Ár, Státusz</b> és <b>Készlet</b> mezőket, majd
+            kattints a <b>FELTÖLTÉS</b> gombra. Ha a státuszt üresen hagyod, a termék „Új" lesz.</p>
+        </details>
 
-      <details><summary>Keresés, szűrés és rendezés</summary>
-        <ul><li>Az <b>Előadó</b> lenyílóval egy előadó termékeit láthatod, az <b>Album</b> lenyílóval egyetlen albumot.</li>
-        <li>Ha semmi nincs kiválasztva, minden termék megjelenik.</li>
-        <li>A <b>Rendezés</b> lenyíló név, előadó, ár vagy készlet szerint rendez.</li></ul></details>
+        <details>
+          <summary>Hibás termék adat felvitel</summary>
+            <p>Ha véletlen hibás adatot viszel fel, nem kell megijdeni. Szólj az egyik adminisztrátornak aki ki tudja
+              javítani a hibát :)</p>
+        </details>
 
-      <details><summary>Készlet módosítása</summary>
-        <p>A sor végén lévő <b>+</b> és <b>−</b> gomb 1-gyel növeli vagy csökkenti a darabszámot, és azonnal el is menti. Nullánál a mínusz gomb inaktív, a készlet nem mehet nulla alá. Bevételezésnél a +, kiadásnál a − gombot használd.</p></details>
+        <details>
+          <summary>Keresés, szűrés és rendezés</summary>
+          <ul>
+            <li>Az <b>Előadó</b> lenyílóval egy előadó termékeit láthatod, az <b>Album</b> lenyílóval egyetlen albumot.
+            </li>
+            <li>Ha semmi nincs kiválasztva, minden termék megjelenik.</li>
+            <li>A <b>Rendezés</b> lenyíló név, előadó, ár vagy készlet szerint rendez.</li>
+          </ul>
+        </details>
 
-      <details><summary>Státusz: Új, Bontott, Sérült</summary>
-        <ul><li><b>Új:</b> bontatlan, hibátlan termék.</li><li><b>Bontott:</b> a fóliát vagy csomagolást felbontották.</li>
-        <li><b>Sérült:</b> a termék vagy a doboz sérült. Ezek a sorok pirosan jelennek meg.</li></ul>
-        <p>A státuszt a sorban lévő színes lenyílóval módosíthatod.</p></details>
+        <details>
+          <summary>Készlet módosítása</summary>
+          <p>A sor végén lévő <b>+</b> és <b>−</b> gomb 1-gyel növeli vagy csökkenti a darabszámot. A készlet szám nem
+            tud nulla alá kerülni. Bevételezésnél a +, kiadásnál a − gombot használd.</p>
+        </details>
 
-      <details><summary>Gyakori kérdések</summary>
-        <ul><li><b>Nem tudom módosítani az árat.</b> Az árat csak Admin módosíthatja.</li>
-        <li><b>Nem látom a Felhasználók menüt.</b> Ez csak Admin jogosultsággal érhető el.</li>
-        <li><b>Hirtelen a bejelentkező oldalra kerültem.</b> Lejárt a munkamenet, jelentkezz be újra.</li></ul></details>
+        <details>
+          <summary>Státusz: Új, Bontott, Sérült</summary>
+          <ul>
+            <li><b>Új:</b> bontatlan, hibátlan termék.</li>
+            <li><b>Bontott:</b> a fóliát vagy csomagolást felbontották.</li>
+            <li><b>Sérült:</b> a termék vagy a doboz sérült. Ezek a sorok pirosan jelennek meg.</li>
+          </ul>
+          <p>A státuszt a sorban lévő színes lenyílóval módosíthatod.</p>
+        </details>
 
-      <details data-admin hidden><summary>Felhasználók kezelése <span class="tag">ADMIN</span></summary>
-        <ul><li><b>Hozzáadás:</b> a Felhasználók oldal tetején add meg a nevet, a jelszót és a munkakört, majd kattints a FELTÖLTÉS gombra. A felhasználónév egyedi.</li>
-        <li><b>Munkakör módosítása:</b> kattints a lista munkakör oszlopában a névre, és válassz újat.</li>
-        <li><b>Törlés:</b> a sor végén lévő × gombbal, megerősítés után.</li>
-        <li>Saját magadat nem törölheted, és a saját admin jogodat sem veheted el.</li></ul></details>
+        <details>
+          <summary>Gyakori kérdések</summary>
+          <ul>
+            <li><b>Nem tudom módosítani az árat:</b> Az árat csak Admin módosíthatja.</li>
+            <li><b>Hirtelen a bejelentkező oldalra kerültem:</b> Lejárt a munkamenet, jelentkezz be újra.</li>
+          </ul>
+        </details>
 
-      <details data-admin hidden><summary>Termékek módosítása és törlése <span class="tag">ADMIN</span></summary>
-        <p>Az árat, az előadó és album nevét, valamint a termék törlését csak Admin végezheti az API-n keresztül (<b>PUT/PATCH /api/products/:id</b>, <b>DELETE /api/products/:id</b>). A részletek az <b>api.http</b> fájlban találhatók.</p></details>
-    </section>
+        <details data-admin hidden>
+          <summary>Felhasználók kezelése <span class="tag">ADMIN</span></summary>
+          <ul>
+            <li><b>Hozzáadás:</b> a Felhasználók oldal tetején add meg a nevet, a jelszót és a munkakört, majd kattints
+              a FELTÖLTÉS gombra.</li>
+            <li><b>Munkakör módosítása:</b> kattints a lista munkakör oszlopában a névre, és válassz újat.</li>
+            <li><b>Törlés:</b> a sor végén lévő × gombbal, megerősítés után.</li>
+            <li>Saját magadat nem törölheted, és a saját admin jogodat sem veheted el.</li>
+          </ul>
+        </details>
 
-    
-  </main>
-</div>
-<div class="toast" id="toast" role="status"></div>
-<script src="/app.js"></script>
-<script>initPage().catch((e) => toast(e.message, true));</script>
+        <details data-admin hidden>
+          <summary>Termékek módosítása és törlése <span class="tag">ADMIN</span></summary>
+          <p>Az árat, az előadó és album nevét, valamint a termék törlését csak Admin végezheti el.</p>
+        </details>
+      </section>
+
+
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/app.js"></script>
+  <script>initPage().catch((e) => toast(e.message, true));</script>
 </body>
+
 </html>

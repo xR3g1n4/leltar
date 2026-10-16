@@ -135,6 +135,9 @@
   .qty { min-width: 28px; font-size: 13px; font-weight: 800; color: var(--new-fg); }
   .row.is-bad .qty { color: var(--bad-fg); }
 
+  .price-in { width: 84px; background: none; border: 0; border-bottom: 1px dashed var(--muted); border-radius: 4px 4px 0 0; color: inherit; font: inherit; font-weight: 700; text-align: right; -moz-appearance: textfield; }
+  .price-in:hover, .price-in:focus { background: var(--field); border-bottom-color: var(--accent); }
+  .price-in::-webkit-outer-spin-button, .price-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .c-del { display: none; }
   .is-admin .c-del { display: block; }
   .is-admin .cols, .is-admin .row { grid-template-columns: minmax(0, 2.4fr) minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.1fr) 32px; }
@@ -199,6 +202,7 @@
     <a class="nav" href="/sugo.html">Súgó és Tudásbázis</a>
     <div class="side-foot">
       <button type="button" id="logout">Kijelentkezés</button>
+      <span title="Esc billentyű">ESC</span>
     </div>
   </aside>
 
@@ -294,7 +298,9 @@ function rowHTML(p) {
       <span class="name">${esc(p.album)}${bad ? '<small>(SÉRÜLT)</small>' : ''}</span>
     </div>
     <div class="c-artist">${esc(p.artist)}</div>
-    <div class="c-price">${fmtPrice(p.price)}</div>
+    <div class="c-price">${isAdmin
+      ? `<input class="price-in" type="number" min="0" step="1" value="${p.price}" data-act="price" title="Ár módosítása (Enter vagy kattintás máshova)" aria-label="Ár (Ft): ${esc(p.album)}"> Ft`
+      : fmtPrice(p.price)}</div>
     <div class="c-status">
       <select class="pill ${STATUS_CLASS[p.status] || ''}" data-act="status" aria-label="Státusz: ${esc(p.album)}">${options}</select>
     </div>
@@ -392,6 +398,25 @@ $('list').addEventListener('click', async (e) => {
 });
 
 $('list').addEventListener('change', async (e) => {
+  const inp = e.target.closest('input[data-act="price"]');
+  if (inp) {
+    if (!isAdmin) return;
+    const id = Number(inp.closest('.row').dataset.id);
+    const price = Number(inp.value);
+    if (inp.value === '' || !Number.isInteger(price) || price < 0) {
+      toast('Az ár nem negatív egész szám legyen.', true);
+      return render();
+    }
+    try {
+      const updated = await api(`/products/${id}`, { method: 'PATCH', body: JSON.stringify({ price }) });
+      replaceRow(updated);
+      toast(`Ár módosítva: ${fmtPrice(updated.price)}`);
+    } catch (err) {
+      toast(err.message, true);
+      render();
+    }
+    return;
+  }
   const sel = e.target.closest('select[data-act="status"]');
   if (!sel) return;
   const id = Number(sel.closest('.row').dataset.id);
