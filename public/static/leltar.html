@@ -42,7 +42,7 @@
   /* ---------- Oldalsáv ---------- */
   .side { background: var(--side); padding: 22px 14px 18px; display: flex; flex-direction: column; }
   .brand { display: flex; gap: 10px; align-items: center; padding: 0 6px 22px; }
-  .logo { width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg, #6d5aa8, #3b2a74); flex: none; }
+  .logo { width: 68px; height: auto; flex: none; }
   .shop { font-size: 11px; font-weight: 700; letter-spacing: .04em; }
   .role { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .grp { font-size: 10px; color: var(--muted); margin: 6px 6px 8px; letter-spacing: .06em; }
@@ -55,6 +55,7 @@
   [hidden] { display: none !important; }
   .nav.active { background: var(--accent); color: var(--accent-ink); }
   .nav svg { width: 14px; height: 14px; flex: none; }
+  .thorns { flex: 1; min-height: 0; margin: 10px -14px; background: url(/tuske.png) top center / 100% auto repeat-y; }
   .side-foot {
     margin-top: auto; display: flex; justify-content: space-between; align-items: center;
     padding: 0 6px; font-size: 11px; color: var(--muted);
@@ -155,6 +156,7 @@
 
   /* ---------- Kisebb képernyők ---------- */
   @media (max-width: 860px) {
+    .thorns { display: none; }
     body { padding: 0; align-items: stretch; }
     .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: 100vh; border-radius: 0; max-width: none; }
     .side { flex-direction: row; align-items: center; gap: 10px; padding: 10px 14px; flex-wrap: wrap; }
@@ -188,6 +190,7 @@
 <div class="app">
   <aside class="side">
     <div class="brand">
+      <img class="logo" src="/macskaLogo.png" alt="The Bias Wrecker logó">
       <div>
         <div class="shop">THE BIAS WRECKER</div>
         <div class="role" id="role">Dolgozó</div>
@@ -200,6 +203,7 @@
     </button>
     <a class="nav" id="navUsers" href="/felhasznalok.html" hidden>Felhasználók</a>
     <a class="nav" href="/sugo.html">Súgó és Tudásbázis</a>
+    <div class="thorns" aria-hidden="true"></div>
     <div class="side-foot">
       <button type="button" id="logout">Kijelentkezés</button>
       <span title="Esc billentyű">ESC</span>

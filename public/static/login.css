@@ -1,182 +1,20 @@
-:root {
-  --bg: #1a1a38;
-  --card: #231f47;
-  --tab-bg: #1a172f;
-  --input-bg: #060d1e;
-  --lilac: #d9b3ff;
-  --lilac-text: #4c1a8c;
-  --muted: #b3a6c9;
-  --glow: rgba(124, 77, 190, 0.45);
-}
-
-* { box-sizing: border-box; margin: 0; }
-
-html, body { height: 100%; }
-
-body {
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  background:
-    radial-gradient(circle at 50% 50%, var(--glow) 0%, rgba(124, 77, 190, 0) 55%),
-    var(--bg);
-  color: var(--muted);
-  display: grid;
-  place-items: center;
-  padding: 24px;
-}
-
-.login {
-  width: 100%;
-  max-width: 372px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.logo {
-  width: 106px;
-  height: 54px;
-  background: rgba(10, 14, 36, 0.35);
-  margin-bottom: 18px;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: var(--lilac);
-  text-align: center;
-}
-
-.subtitle {
-  margin: 20px 0 16px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--muted);
-  text-align: center;
-}
-
-.card {
-  width: 100%;
-  min-height: 420px;
-  padding: 22px 33px 32px;
-  background: var(--card);
-  border: 2px solid var(--outline);
-  border-radius: 28px;
-}
-
-/* Role switch (pure CSS, radio-based) */
-.role-switch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  padding: 3px;
-  margin: 0 -3px 18px;
-  background: var(--tab-bg);
-  border-radius: 8px;
-}
-
-.role-switch input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.role-switch label {
-  padding: 13px 8px;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--muted);
-  background: var(--card);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: color 0.15s;
-}
-
-.role-switch input:checked + label { color: #c77dff; }
-
-.role-switch input:focus-visible + label {
-  outline: 2px solid var(--lilac);
-  outline-offset: 1px;
-}
-
-.field-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.field {
-  display: block;
-  width: 100%;
-  height: 38px;
-  margin-bottom: 24px;
-  padding: 0 12px;
-  font: inherit;
-  font-size: 14px;
-  color: #fff;
-  background: var(--input-bg);
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-
-.field:focus {
-  outline: none;
-  border-color: var(--lilac);
-}
-
-/* Password show/hide */
-.password-wrap {
-  position: relative;
-}
-
-.password-wrap .field {
-  padding-right: 44px;
-}
-
-.toggle-pw {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 40px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  color: var(--muted);
-  background: none;
-  border: 0;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.toggle-pw:hover { color: var(--lilac); }
-.toggle-pw:focus-visible { outline: 2px solid var(--lilac); outline-offset: -2px; }
-
-.toggle-pw .icon-hide { display: none; }
-.toggle-pw[aria-pressed="true"] .icon-show { display: none; }
-.toggle-pw[aria-pressed="true"] .icon-hide { display: block; }
-
-.submit {
-  display: block;
-  width: calc(100% - 20px);
-  height: 47px;
-  margin: 46px auto 0;
-  font: inherit;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--lilac-text);
-  background: var(--lilac);
-  border: 0;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: filter 0.15s;
-}
-
-.submit:hover { filter: brightness(1.08); }
-.submit:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
-}
+:root{--text:#e3d3ff;--muted:#b9a8e6;--accent:#dcb9ff;--ink:#3a1a7a}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:Inter,"Segoe UI",system-ui,sans-serif;color:var(--text);display:flex;align-items:center;justify-content:center;padding:16px;
+  background:radial-gradient(circle at 50% 45%,#3b2670 0,#1a1b3d 38%,#12132c 75%)}
+.login{width:100%;max-width:560px;text-align:center}
+.logo{width:96px;height:auto;display:block;margin:0 auto 6px}
+h1{margin:0;font-size:22px;letter-spacing:.03em;color:var(--accent)}
+.sub{margin:6px 0 22px;font-size:13px;font-weight:600;color:var(--muted)}
+form{width:100%;max-width:372px;margin:0 auto;padding:44px 34px 40px;border-radius:24px;text-align:left;
+  background:#1e1a3f url("/loginHatter.png") center/cover no-repeat;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+label{display:block;margin:0 0 6px;font-size:11px;font-weight:800;color:var(--muted)}
+input{width:100%;height:40px;margin-bottom:22px;padding:0 12px;border:0;border-radius:6px;background:#060b1a;color:var(--text);font:inherit;font-size:14px}
+input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{display:block;width:100%;height:48px;margin-top:34px;border:0;border-radius:24px;background:var(--accent);color:var(--ink);font:inherit;font-size:16px;font-weight:800;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.pw{position:relative;margin-bottom:22px}.pw input{margin-bottom:0;padding-right:44px}
+button.eye{position:absolute;right:2px;top:0;width:40px;height:40px;margin:0;padding:0;border-radius:6px;background:none;color:var(--muted);display:grid;place-items:center}
+button.eye:hover{color:var(--accent)}button.eye svg{width:20px;height:20px}button.eye .off{display:none}button.eye[aria-pressed="true"] .on{display:none}button.eye[aria-pressed="true"] .off{display:block}
+.err{min-height:18px;margin:-8px 0 0;font-size:12px;font-weight:700;color:#ff8aa3}
