@@ -11,7 +11,7 @@ Futtatási útmutató:
 2. lépés.: nyisd meg a git bash terminált, és írd be node server.js parancsot a szerver elindításához.
 3. lépés.: válassz ki egy böngészőt, majd be kell írni hogy, localhost:3000.
 
-Bejelentkezés
+Bejelentkezés:
 1. lépés.: a login felületen a felhasználó és jelszó mezőben meg kell adni a helyes adatokat.
 (adminisztrátor: Nagy Anna   |  jelszó : pass111 // dolgozó: Katika   |  jelszó: pass123)
 
