@@ -12,5 +12,5 @@ Futtatási útmutató:
 3. lépés.: válassz ki egy böngészőt, majd be kell írni hogy, localhost:3000.
 
 Bejelentkezés
-1. lépés.: a login felületen a felhasználó és jelszó mezőben meg kell adni a helyes adatokat. (adminisztrátor: Nagy Anna jelszó : pass111 // dolgozó: Katika jelszó: pass123)
+1. lépés.: a login felületen a felhasználó és jelszó mezőben meg kell adni a helyes adatokat. (adminisztrátor: Nagy Anna     jelszó : pass111 // dolgozó: Katika     jelszó: pass123)
 2. lépés.: teszteld a felületeket.
