@@ -13,4 +13,4 @@ Futtatási útmutató:
 
 Bejelentkezés
 1. lépés.: a login felületen a felhasználó és jelszó mezőben meg kell adni a helyes adatokat. (adminisztrátor: Nagy Anna jelszó : pass111 // dolgozó: Katika jelszó: pass123)
-2.teszteld a felületeket.
+2. lépés.: teszteld a felületeket.
