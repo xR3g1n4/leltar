@@ -7,7 +7,7 @@ Célja egy k-poppal foglalkozó bolt raktárának rendszerezése, szortírozása
 
 Futtatási útmutató: 
 
-1. lépés.: miután letöltöd a zip fájlt, bontsd ki. és nyisd meg az egész mappát a Visual Studion keresztül.
+1. lépés.: miután letöltöd a zip fájlt, bontsd ki, és nyisd meg az egész mappát a Visual Studion keresztül.
 2. lépés.: nyisd meg a git bash terminált, és írd be node server.js parancsot a szerver elindításához.
 3. lépés.: válassz ki egy böngészőt, majd be kell írni hogy, localhost:3000.
 
